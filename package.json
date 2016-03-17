@@ -15,6 +15,7 @@
     "angular-scroll": "^1.0.0",
     "angular-ui-bootstrap": "^1.2.2",
     "angular-ui-router": "^0.2.18",
+    "angular-ui-router-styles": "0.0.6",
     "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
     "html5shiv": "^3.7.3",

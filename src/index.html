@@ -1,10 +1,10 @@
-<!doctype html>
-<html lang="zh-CN" ng-app="myApp">
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="myApp" ng-controller="MainCtrl">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title></title>
+<title ng-bind="title"></title>
 <link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 <!--[if lt IE 9]>
   <script src="/node_modules/html5shiv/dist/html5.min.js"></script>
@@ -159,7 +159,7 @@ header.active>a.gotop {
 </style>
 </head>
 <body>
-<header class="navbar navbar-default navbar-fixed-top header" ng-controller="HeadCtrl" du-scrollspy="top">
+<header class="navbar navbar-default navbar-fixed-top header" du-scrollspy="top">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse" ng-click="isCollapsed = !isCollapsed">
@@ -254,6 +254,7 @@ header.active>a.gotop {
 <script src="/node_modules/angular/angular.min.js"></script>
 <script src="/node_modules/angular-animate/angular-animate.min.js"></script>
 <script src="/node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="/node_modules/angular-ui-router-styles/ui-router-styles.js"></script>
 <script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
 <script src="/node_modules/angular-scroll/angular-scroll.min.js"></script>
 <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
@@ -841,7 +842,7 @@ header.active>a.gotop {
 </div>
 </script>
 <script>
-var myApp = angular.module('myApp', ['ngAnimate', 'ui.router', 'ui.bootstrap', 'duScroll']);
+var myApp = angular.module('myApp', ['ngAnimate', 'ui.router', 'ui.bootstrap', 'duScroll', 'uiRouterStyles']);
 myApp.config(['$stateProvider', '$urlRouterProvider',  '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider){
   $locationProvider.html5Mode(false);
   $urlRouterProvider.otherwise("/home");
@@ -849,6 +850,10 @@ myApp.config(['$stateProvider', '$urlRouterProvider',  '$locationProvider', func
   .state("home", {
   	url: "/home",
   	templateUrl: "home.html",
+  	data: {
+  	  pageTitle: "首页",
+      css: 'test.css'
+  	},
   	controller: function($scope){
       $scope.myInterval = 5000;
       $scope.noWrapSlides = false;
@@ -880,7 +885,8 @@ myApp.config(['$stateProvider', '$urlRouterProvider',  '$locationProvider', func
   	url: "/cooking",
   	templateUrl: "cooking.html",
   	data: {
-  	  pageTitle: "套餐"
+  	  pageTitle: "套餐",
+      css: 'test.css'
   	},
   	controller: function($scope){
   	  items = function(){var a=[],i=0;while(i<123){a.push({idx:++i});};return a;}();
@@ -934,7 +940,11 @@ myApp.config(['$stateProvider', '$urlRouterProvider',  '$locationProvider', func
   })
   .state("party", {
   	url: "/party",
-  	templateUrl: "party.html"
+  	templateUrl: "party.html",
+  	data: {
+  	  pageTitle: "订派对",
+      css: 'test.css'
+  	},
   })
   .state("login", {
   	url: "/login",
@@ -1010,7 +1020,7 @@ myApp.controller('AboutCtrl', ["$scope", function ($scope) {
   initMap();//创建和初始化地图
 }]);
 
-myApp.controller('HeadCtrl', ["$scope", function ($scope) {
+myApp.controller('MainCtrl', ["$scope", function ($scope) {
   $scope.city = '成都';
   $scope.cities = [
     '成都',
@@ -1024,6 +1034,23 @@ myApp.controller('HeadCtrl', ["$scope", function ($scope) {
     $scope.city = city;
   };
 }]);
+
+myApp.directive('title', ['$rootScope', '$timeout',
+  function($rootScope, $timeout) {
+    return {
+      link: function() {
+        var listener = function(event, toState) {
+          $timeout(function() {
+            $rootScope.title = (toState.data && toState.data.pageTitle) 
+            ? toState.data.pageTitle 
+            : '首页';
+          });
+        };
+        $rootScope.$on('$stateChangeSuccess', listener);
+      }
+    };
+  }
+]);
 </script>
 </body>
 </html>
