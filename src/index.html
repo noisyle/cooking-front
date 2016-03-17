@@ -1,0 +1,1029 @@
+<!doctype html>
+<html lang="zh-CN" ng-app="myApp">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title></title>
+<link href="/node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<!--[if lt IE 9]>
+  <script src="/node_modules/html5shiv/dist/html5.min.js"></script>
+  <script src="/node_modules/response.js/respond.min.js"></script>
+<![endif]-->
+<link href="/node_modules/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+<style>
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 60px;
+  color: #803e26;
+}
+h1, h2, h3, h4, h5, h6 {margin-top: 0; text-transform: uppercase; font-weight: 400;}
+ul, ol {margin: 0; list-style: none;}
+p {margin: 0;}
+a {color: #333; text-decoration: none; cursor: pointer;}
+a:hover {text-decoration:none}
+html, body {
+  font-family: "Microsoft YaHei", "微软雅黑", SimSun, "宋体", Heiti, "黑体", sans-serif;
+  font-color: #803e26;
+  font-size: 100%;
+  background-color: #fff;
+}
+
+/*--header--*/
+.header {
+  z-index: 9;
+  background-color: #fff;
+  margin-bottom: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  box-shadow: 0 0 10px 2px rgba(0,0,0,.27);
+}
+@media screen and (max-width: 767px){
+  .header {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .header .visible-xs.collapse.in {
+    display: block!important;
+  }
+  .header .visible-xs.collapse {
+    display: none!important;
+  }
+}
+.navbar-login{
+  padding-right: 350px;
+}
+.navbar-login .navbar-nav>li>span{
+  padding: 15px;
+}
+.navbar-login .navbar-nav>li>span,
+.navbar-login .navbar-nav>li a {
+  font-size: 14px;
+}
+.navbar-large .navbar-nav>li>a {
+  color: #803e26;
+}
+.navbar-large .navbar-nav>li:hover>a {
+  color: #803e26;
+  border-bottom: 2px solid #CDB38B;
+}
+.navbar-large .navbar-nav>.active>a, .navbar-large .navbar-nav>.active>a:focus, .navbar-large .navbar-nav>.active>a:hover {
+  color: #803e26;
+  background-color: #fff;
+  border-bottom: 2px solid #803e26;
+}
+.change-city {
+  padding-left: 25px;
+}
+.change-city>a {
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/*--footer--*/
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  min-height: 180px;
+  padding-top: 30px;
+  background-color: #e8e8e8;
+}
+.footer h3 {
+  color: #703e26;
+  font-size: 1.1em;
+  margin-bottom: 1em;
+}
+.footer ul{
+  padding: 0;
+  list-style: none;
+}
+.footer ul>li,
+.footer ul>li>a{
+  color: #803e26;;
+  font-size: 0.85em;
+  text-decoration: none;
+}
+.footer ul>li>a:hover{
+  color: #803e26;;
+}
+.footer i{
+  color: #803e26;;
+}
+@media screen and (max-width: 767px){
+  .footer .footer-col {
+    float: none;
+    width: 100%;
+    margin-right: 0;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    text-align: center;
+  }
+}
+
+
+/*--main--*/
+.main {
+  padding: 100px 0 150px 0;
+}
+@media screen and (max-width: 767px){
+  .main {
+    padding-top: 80px;
+    padding-bottom: 500px;
+  }
+}
+
+a.gotop {
+  display: block;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10;
+  background-color: transparent;
+  color: #CDB38B;
+  padding: 5px;
+  border-radius: 3px;
+}
+a.gotop:hover {
+  background-color: #803e26;
+  color: #fff;
+}
+header.active>a.gotop {
+  display: none;
+}
+</style>
+</head>
+<body>
+<header class="navbar navbar-default navbar-fixed-top header" ng-controller="HeadCtrl" du-scrollspy="top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse" ng-click="isCollapsed = !isCollapsed">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" ui-sref="home" ui-sref-opts="{reload: true}">LOGO</a>
+      <span class="navbar-brand change-city" uib-dropdown>
+		<a href id="city-dropdown" uib-dropdown-toggle><span ng-bind="city"></span> <span class="caret"></span></a>
+        <ul uib-dropdown-menu aria-labelledby="city-dropdown" class="list-unstyled">
+          <li ng-repeat="choice in cities">
+            <a href ng-click="chose(choice)" ng-bind="choice"></a>
+          </li>
+        </ul>
+      </span>
+    </div>
+    <nav class="hidden-xs navbar-large">
+      <ul class="nav navbar-nav navbar-right">
+        <li ui-sref-active="active"><a ui-sref="home" ui-sref-opts="{reload: true}">首页</a></li>
+        <li ui-sref-active="active"><a ui-sref="order" ui-sref-opts="{reload: true}">找大厨</a></li>
+        <li ui-sref-active="active"><a ui-sref="party" ui-sref-opts="{reload: true}">订派对</a></li>
+        <li ui-sref-active="active"><a ui-sref="about" ui-sref-opts="{reload: true}">关于我们</a></li>
+      </ul>
+    </nav>
+    <nav class="hidden-xs navbar-login">
+      <ul class="nav navbar-nav navbar-right">
+        <li><span style="display: inline-block"><a ui-sref="login" ui-sref-opts="{reload: true}">登录</a>/<a ui-sref="register" ui-sref-opts="{reload: true}">注册</a></span></li>
+        <li><a ui-sref="cart" ui-sref-opts="{reload: true}"><i class="fa fa-shopping-cart"></i> <span class="badge">3</span></a></li>
+      </ul>
+    </nav>
+    <nav class="visible-xs navbar-small" uib-collapse="!isCollapsed">
+      <ul class="nav navbar-nav">
+        <li ui-sref-active="active"><a ui-sref="home" ui-sref-opts="{reload: true}" ng-click="isCollapsed = !isCollapsed">首页</a></li>
+        <li ui-sref-active="active"><a ui-sref="order.cooking" ui-sref-opts="{reload: true}" ng-click="isCollapsed = !isCollapsed">推荐套餐</a></li>
+        <li ui-sref-active="active"><a ui-sref="order.custom" ui-sref-opts="{reload: true}" ng-click="isCollapsed = !isCollapsed">自选菜品</a></li>
+        <li ui-sref-active="active"><a ui-sref="party" ui-sref-opts="{reload: true}" ng-click="isCollapsed = !isCollapsed">订派对</a></li>
+        <li ui-sref-active="active"><a ui-sref="cart" ui-sref-opts="{reload: true}" ng-click="isCollapsed = !isCollapsed">购物车 <span class="badge">3</span></a></li>
+        <li ui-sref-active="active"><a ui-sref="about" ui-sref-opts="{reload: true}" ng-click="isCollapsed = !isCollapsed">关于我们</a></li>
+      </ul>
+    </nav>
+  </div>
+  <a class="gotop" href="#top" du-smooth-scroll><i class="fa fa-arrow-up"></i> 返回顶部</a>
+</header>
+<div id="top" style="height:1px;"></div>
+<div class="main" ui-view></div>
+<footer class="footer">
+  <div class="container">
+    <div class="row">
+		<div class="footer-col col-sm-3">
+		  <h3>Company</h3>
+		  <ul>
+		  	<li><a href="#">首页</a></li>
+		    <li><a href="#">关于我们</a></li>
+		    <li><a href="#">最新动态</a></li>
+		    <li><a href="#">联系我们</a></li>
+		  </ul>
+		  </div>
+		<div class="footer-col col-sm-3">
+		  <h3>Information</h3>
+		  <ul>
+		  	<li><a href="#">My Account</a></li>
+		    <li><a href="#">Rewards</a></li>
+		    <li><a href="#">Terms & Conditions</a></li>
+		    <li><a href="#">Buying Guide</a></li>
+		    <li><a href="#">FAQ</a></li>
+		  </ul>
+		  </div>
+		<div class="footer-col col-sm-3">
+		  <h3>Let's be friends</h3>
+		  <ul class="list-inline">
+		 <li><a href=""><i class="fa fa-facebook-square fa-inverse fa-2x"></i></a></li>
+		 <li><a href=""><i class="fa fa-twitter-square fa-inverse fa-2x"></i></a></li>
+		 <li><a href=""><i class="fa fa-google-plus-square fa-inverse fa-2x"></i></a></li>
+		 <li><a href=""><i class="fa fa-rss-square fa-inverse fa-2x"></i></a></li>
+		  </ul>
+		</div>
+		<div class="footer-col col-sm-3">
+		  <ul>
+		  	<li><img src="/img/secure.png" alt=""/></li> 
+		  	<li>Lorem ipsum dolor coadipiscing</li>
+		  </ul>
+		  <ul>
+		  	<li><img src="/img/order.png" alt=""/></li> 
+		  	<li>Lorem ipsum dolor coadipiscing</li>
+		 </ul>
+		</div>
+    </div>
+  </div>
+</footer>
+<script src="/node_modules/angular/angular.min.js"></script>
+<script src="/node_modules/angular-animate/angular-animate.min.js"></script>
+<script src="/node_modules/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="/node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+<script src="/node_modules/angular-scroll/angular-scroll.min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
+<script type="text/ng-template" id="home.html">
+<style>
+.header {
+  transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+}
+.header.active {
+  opacity: .9;
+  filter: alpha(opacity=90);
+  padding-top: 25px;
+  padding-bottom: 25px;
+  transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+}
+@media screen and (max-width: 767px){
+  .header.active {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+.main {
+  padding-top: 0px;
+}
+@media screen and (max-width: 767px){
+  .main {
+    padding-top: 80px;
+  }
+}
+.content-section {
+  padding: 80px 0;
+}
+@media screen and (max-width: 767px){
+  .content-section {
+    padding: 30px 0;
+  }
+}
+.content-section-gray {
+  background-color: #f8f8f8;
+}
+.pic-grid-item {
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+}
+.pic-grid-item > .pic-grid-mask {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: .3;
+  filter: alpha(opacity=30);
+  transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+}
+.pic-grid-item:hover > .pic-grid-mask {
+  opacity: 0;
+  filter: alpha(opacity=0);
+  transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+}
+.pic-grid-item > .pic-grid-title {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  color: #fff;
+}
+.pic-grid-item > .pic-grid-title > h1 {
+  font-size: 24px;
+  transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+}
+.pic-grid-item:hover > .pic-grid-title > h1 {
+  font-size: 30px;
+  transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -webkit-transition: all 0.3s;
+}
+</style>
+    <uib-carousel active="active" interval="myInterval" no-wrap="noWrapSlides">
+      <uib-slide ng-repeat="slide in slides track by slide.id" index="slide.id">
+        <img ng-src="{{slide.image}}" style="margin:auto;">
+        <div class="carousel-caption">
+          <h4>Slide {{slide.id}}</h4>
+          <p>{{slide.text}}</p>
+        </div>
+      </uib-slide>
+    </uib-carousel>
+    <div class="content-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Death to the Stock Photo:<br>Special Thanks</h2>
+                    <p class="lead">A special thanks to <a target="_blank" href="http://join.deathtothestockphoto.com/">Death to the Stock Photo</a> for providing the photographs that you see in this template. Visit their website to become a member.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <div class="row">
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-section content-section-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-2 col-lg-push-5 col-sm-6 col-sm-push-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Death to the Stock Photo:<br>Special Thanks</h2>
+                    <p class="lead">A special thanks to <a target="_blank" href="http://join.deathtothestockphoto.com/">Death to the Stock Photo</a> for providing the photographs that you see in this template. Visit their website to become a member.</p>
+                </div>
+                <div class="col-lg-5 col-lg-pull-7 col-sm-6 col-sm-pull-6">
+                    <div class="row">
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 pic-grid-item">
+                            <img class="img-responsive" src="http://images.freeimages.com/images/previews/cf9/gyros-1547668.jpg" alt="">
+                            <div class="pic-grid-mask"></div>
+                            <div class="pic-grid-title">
+								<h1>asdf</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content-section hidden-xs">
+        <div class="container">
+        <div class="row">
+            <div class="col-sm-3 text-center">
+                <span><i class="fa fa-lock fa-5x"></i></span>
+                <div>
+                    <h3>安全保障</h3>
+                    <p>专业厨师，资质齐全确<br />保安全卫生高品质</p>
+                </div>
+            </div>
+            <div class="col-sm-3 text-center">
+                <span><i class="fa fa-check-square-o fa-5x"></i></span>
+                <div>
+                    <h3>服务保障</h3>
+                    <p>完善的团队，严格的管理<br />清晰的工作流程，确保服务到位</p>
+                </div>
+            </div>
+            <div class="col-sm-3 text-center">
+                <span><i class="fa fa-headphones fa-5x"></i></span>
+                <div>
+                    <h3>客服保障</h3>
+                    <p>客服全程跟进服务流程<br />了解您的需求，随时答疑解惑</p>
+                </div>
+            </div>
+            <div class="col-sm-3 text-center">
+                <span><i class="fa fa-umbrella fa-5x"></i></span>
+                <div>
+                    <h3>贴心服务</h3>
+                    <p>上门服务统一整洁着装<br />做完菜后将台面收拾整理</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="order.html">
+<style>
+</style>
+<div class="container">
+  <ul class="nav nav-tabs hidden-xs">
+    <li role="presentation" ui-sref-active="active"><a ui-sref=".cooking">推荐套餐</a></li>
+    <li role="presentation" ui-sref-active="active"><a ui-sref=".custom">自选菜品</a></li>
+  </ul>
+  <div ui-view></div>
+</div>
+</script>
+<script type="text/ng-template" id="cooking.html">
+<style>
+.filterUL {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #CDB38B;
+}
+.filterUL li {
+  margin-top: 10px;
+}
+.filterUL .type {
+  font-size: 14px;
+  width: 60px;
+  padding-top: 2px;
+}
+.filterUL .choice {
+  margin-left: 60px;
+}
+.filterUL .choice>a {
+  padding: 0 5px;
+  background-color: #fff;
+  border: 0;
+  border-radius: 0;
+}
+.filterUL .choice>a:hover,
+.filterUL .choice>a.active {
+  color: #fff;
+  background-color: #803e26;
+}
+.item {
+  border-bottom: 1px solid #CDB38B;
+  color: #333;
+  padding: 0 20px;
+}
+.item:hover {
+  background-color: #f8f8f8;
+}
+.item>div {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.item-title {
+  font-size: 20px;
+}
+.item-action {
+  text-align: right;
+  padding: 20px;
+}
+.item-price {
+  color: #803e26;
+  font-size: 28px;
+}
+.item-action .btn {
+  font-size: 18px;
+  border-color: #CDB38B;
+  color: #803e26;
+  border-radius: 0;
+  padding: 3px 15px;
+}
+.item .btn:hover, .item .btn:focus {
+  color: #fff;
+  background-color: #803e26;
+}
+.pagination>li>a, .pagination>li>span {
+    color: #803e26;
+    border: 1px solid #CDB38B;
+}
+.pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover {
+    color: #803e26;
+    background-color: #eee;
+    border-color: #ddd;
+    border: 1px solid #CDB38B;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    background-color: #803e26;
+    border-color: #803e26;
+}
+</style>
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="filterUL">
+      <li>
+        <div class="pull-left type">菜系：</div>
+        <div class="choice">
+          <a class="btn btn-default" href role="button" ng-model="filter.type" uib-btn-radio="'all'" ng-change="filterChanged()">不限</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.type" uib-btn-radio="'chuancai'" ng-change="filterChanged()">川菜</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.type" uib-btn-radio="'yuecai'" ng-change="filterChanged()">粤菜</a>
+        </div>
+      </li>
+      <li>
+        <div class="pull-left type">口味：</div>
+        <div class="choice">
+          <a class="btn btn-default" href role="button" ng-model="filter.flavor" uib-btn-radio="'all'" ng-change="filterChanged()">不限</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.flavor" uib-btn-radio="'qingdan'" ng-change="filterChanged()">清淡</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.flavor" uib-btn-radio="'mala'" ng-change="filterChanged()">麻辣</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <ul ng-repeat="item in items" class="list-unstyled">
+      <li class="item">
+        <div class="row">
+          <div class="col-xs-7 col-sm-3">
+            <img class="img-responsive" src="http://images.freeimages.com/images/previews/676/pita-gyros-1323451.jpg" alt="">
+          </div>
+          <div class="col-xs-5 col-sm-3 col-sm-push-6 item-action">
+            <div><span class="item-price">{{item.idx | currency : '￥'}}</span> 元</div>
+            <div><a class="btn btn-default" ui-sref="order.cookingOrder({id: item.idx})">马上预订</a></div>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-sm-pull-3 item-detail">
+            <div><span class="item-title">套餐{{item.idx}}</span></div>
+			<div>介绍{{item.idx}}</div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="col-xs-12">
+    <div class="pull-right">
+      <uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" items-per-page="perPage" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></uib-pagination>
+	</div>
+  </div>
+</div>
+</script>
+<script type="text/ng-template" id="cookingOrder.html">
+套餐id： {{id}}
+</script>
+<script type="text/ng-template" id="custom.html">
+<style>
+.filterUL {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #CDB38B;
+}
+.filterUL li {
+  margin-top: 10px;
+}
+.filterUL .type {
+  font-size: 14px;
+  width: 60px;
+  padding-top: 2px;
+}
+.filterUL .choice {
+  margin-left: 60px;
+}
+.filterUL .choice>a {
+  padding: 0 5px;
+  background-color: #fff;
+  border: 0;
+  border-radius: 0;
+}
+.filterUL .choice>a:hover,
+.filterUL .choice>a.active {
+  color: #fff;
+  background-color: #803e26;
+}
+.item {
+  border-bottom: 1px solid #CDB38B;
+  color: #333;
+  padding: 0 20px;
+}
+.item:hover {
+  background-color: #f8f8f8;
+}
+.item>div {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.item-title {
+  font-size: 20px;
+}
+.item-action {
+  text-align: right;
+  padding: 20px;
+}
+.item-price {
+  color: #803e26;
+  font-size: 28px;
+}
+.item-action .btn {
+  font-size: 18px;
+  border-color: #CDB38B;
+  color: #803e26;
+  border-radius: 0;
+  padding: 3px 15px;
+}
+.item .btn:hover, .item .btn:focus {
+  color: #fff;
+  background-color: #803e26;
+}
+.pagination>li>a, .pagination>li>span {
+    color: #803e26;
+    border: 1px solid #CDB38B;
+}
+.pagination>li>a:focus, .pagination>li>a:hover, .pagination>li>span:focus, .pagination>li>span:hover {
+    color: #803e26;
+    background-color: #eee;
+    border-color: #ddd;
+    border: 1px solid #CDB38B;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover, .pagination>.active>span, .pagination>.active>span:focus, .pagination>.active>span:hover {
+    background-color: #803e26;
+    border-color: #803e26;
+}
+</style>
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="filterUL">
+      <li>
+        <div class="pull-left type">菜系：</div>
+        <div class="choice">
+          <a class="btn btn-default" href role="button" ng-model="filter.type" uib-btn-radio="'all'" ng-change="filterChanged()">不限</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.type" uib-btn-radio="'chuancai'" ng-change="filterChanged()">川菜</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.type" uib-btn-radio="'yuecai'" ng-change="filterChanged()">粤菜</a>
+        </div>
+      </li>
+      <li>
+        <div class="pull-left type">口味：</div>
+        <div class="choice">
+          <a class="btn btn-default" href role="button" ng-model="filter.flavor" uib-btn-radio="'all'" ng-change="filterChanged()">不限</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.flavor" uib-btn-radio="'qingdan'" ng-change="filterChanged()">清淡</a>
+          <a class="btn btn-default" href role="button" ng-model="filter.flavor" uib-btn-radio="'mala'" ng-change="filterChanged()">麻辣</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-xs-12">
+    <ul ng-repeat="item in items" class="list-unstyled">
+      <li class="item">
+        <div class="row">
+          <div class="col-xs-7 col-sm-3">
+            <img class="img-responsive" src="http://images.freeimages.com/images/previews/676/pita-gyros-1323451.jpg" alt="">
+          </div>
+          <div class="col-xs-5 col-sm-3 col-sm-push-6 item-action">
+            <div><span class="item-price">{{item.idx | currency : '￥'}}</span> 元</div>
+            <div><button type="button" class="btn btn-default">加入购物车</button></div>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-sm-pull-3 item-detail">
+            <div><span class="item-title">菜品{{item.idx}}</span></div>
+			<div>介绍{{item.idx}}</div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="col-xs-12">
+    <div class="pull-right">
+      <uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" items-per-page="perPage" boundary-links="true" rotate="false" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;" ng-change="pageChanged()"></uib-pagination>
+    </div>
+  </div>
+</div>
+</script>
+<script type="text/ng-template" id="party.html">
+<div class="container-fluid">
+  party
+</div>
+</script>
+<script type="text/ng-template" id="login.html">
+<style>
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 30px auto;
+}
+.form-signin>input,
+.form-signin>button {
+  margin-bottom: 15px;
+  border-radius: 0;
+}
+.form-signin a {
+  font-size: 14px;
+  color: #803e26;
+}
+.form-signin>.btn-primary,
+.form-signin>.btn-primary:active {
+  background-color: #803e26;
+  border-color: #803e26;
+}
+</style>
+<div class="container-fluid">
+  <form class="form-signin">
+    <input type="text" name="inputEmail" class="form-control" placeholder="手机号" required autofocus>
+    <input type="password" name="inputPassword" class="form-control" placeholder="密码" required>
+    <span><a>忘记密码？</a><a ui-sref="register" class="pull-right">现在注册</a></span>
+    <button class="btn btn-primary btn-block" type="submit">立即登录</button>
+  </form>
+</div>
+</script>
+<script type="text/ng-template" id="register.html">
+<style>
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 10px auto;
+}
+.form-signin>input,
+.form-signin>button,
+.form-signin>.form-signin-heading {
+  margin-bottom: 15px;
+  border-radius: 0;
+}
+.form-signin a {
+  font-size: 14px;
+  color: #803e26;
+}
+.form-signin>.btn-primary,
+.form-signin>.btn-primary:active {
+  background-color: #803e26;
+  border-color: #803e26;
+}
+</style>
+<div class="container-fluid">
+  <form class="form-signin">
+    <h2 class="form-signin-heading">用户注册</h2>
+    <input type="text" name="inputEmail" class="form-control" placeholder="手机号" required autofocus>
+    <input type="password" name="inputPassword" class="form-control" placeholder="密码" required>
+    <input type="password" name="inputPassword2" class="form-control" placeholder="确认密码" required>
+    <input type="text" name="valicode" class="form-control" placeholder="验证码" required>
+    <button class="btn btn-primary btn-block" type="submit">立即注册</button>
+  </form>
+</div>
+</script>
+<script type="text/ng-template" id="about.html">
+<div class="container-fluid">
+	<div class="row" style="margin-bottom:10px;">
+		<div class="col-sm-8">
+      <div style="width:100%;height:450px;border:0;padding:0;margin:0;" id="dituContent"></div>
+		</div>
+		<div class="col-sm-4">
+			<p>
+				Phone: <strong>123.456.7890</strong>
+			</p>
+			<p>
+				Email: <strong><a href="mailto:name@example.com">name@example.com</a></strong>
+			</p>
+			<p>
+				Address: <strong>3481 Melrose Place <br>Beverly Hills, CA 90210
+				</strong>
+			</p>
+		</div>
+	</div>
+</div>
+</script>
+<script>
+var myApp = angular.module('myApp', ['ngAnimate', 'ui.router', 'ui.bootstrap', 'duScroll']);
+myApp.config(['$stateProvider', '$urlRouterProvider',  '$locationProvider', function($stateProvider, $urlRouterProvider, $locationProvider){
+  $locationProvider.html5Mode(false);
+  $urlRouterProvider.otherwise("/home");
+  $stateProvider
+  .state("home", {
+  	url: "/home",
+  	templateUrl: "home.html",
+  	controller: function($scope){
+      $scope.myInterval = 5000;
+      $scope.noWrapSlides = false;
+      $scope.active = 0;
+      var slides = $scope.slides = [];
+      var currIndex = 0;
+    
+      $scope.addSlide = function() {
+        var newWidth = 600 + slides.length + 1;
+        slides.push({
+          image: '/img/slide1.jpg',
+          text: ['Nice image','Awesome photograph','That is so cool','I love that'][slides.length % 4],
+          id: currIndex++
+        });
+      };
+  	  for (var i=0; i<4; i++) {
+  	    $scope.addSlide();
+  	  }
+  	}
+  })
+  .state("order", {
+  	url: "/order",
+  	templateUrl: "order.html",
+  	controller: function($state){
+  		if($state.is('order')) $state.go("order.cooking");
+  	}
+  })
+  .state("order.cooking", {
+  	url: "/cooking",
+  	templateUrl: "cooking.html",
+  	data: {
+  	  pageTitle: "套餐"
+  	},
+  	controller: function($scope){
+  	  items = function(){var a=[],i=0;while(i<123){a.push({idx:++i});};return a;}();
+  	  $scope.items = items.slice(0, 10);
+  	  $scope.maxSize = 5;
+  	  $scope.perPage = 10;
+      $scope.totalItems = items.length;
+      $scope.currentPage = 1;
+      $scope.pageChanged = function(){
+      	  $scope.items = items.slice(($scope.currentPage-1)*10, $scope.currentPage*10);
+      };
+      $scope.filter = {type: "all", flavor: "all"};
+      $scope.filterChanged = function(){
+    	  $scope.currentPage = 1;
+    	  $scope.items = items.slice(0, 10);
+      };
+  	}
+  })
+  .state("order.cookingOrder", {
+  	url: "/cooking/:id",
+  	templateUrl: "cookingOrder.html",
+  	data: {
+  	  pageTitle: "套餐"
+  	},
+  	controller: function($scope, $stateParams){
+  	  $scope.id = $stateParams.id;
+  	}
+  })
+  .state("order.custom", {
+  	url: "/custom",
+  	templateUrl: "custom.html",
+  	data: {
+  	  pageTitle: "自选"
+  	},
+  	controller: function($scope){
+  	  items = function(){var a=[],i=0;while(i<123){a.push({idx:++i});};return a;}();
+  	  $scope.items = items.slice(0, 10);
+  	  $scope.maxSize = 5;
+  	  $scope.perPage = 10;
+      $scope.totalItems = items.length;
+      $scope.currentPage = 1;
+      $scope.pageChanged = function(){
+      	  $scope.items = items.slice(($scope.currentPage-1)*10, $scope.currentPage*10);
+      };
+      $scope.filter = {type: "all", flavor: "all"};
+      $scope.filterChanged = function(){
+    	  $scope.currentPage = 1;
+    	  $scope.items = items.slice(0, 10);
+      };
+  	}
+  })
+  .state("party", {
+  	url: "/party",
+  	templateUrl: "party.html"
+  })
+  .state("login", {
+  	url: "/login",
+  	templateUrl: "login.html",
+  	data: {
+  	  pageTitle: "登录"
+  	},
+  	controller: "LoginCtrl"
+  })
+  .state("register", {
+  	url: "/register",
+  	templateUrl: "register.html",
+  	data: {
+  	  pageTitle: "注册"
+  	},
+  	controller: "RegisterCtrl"
+  })
+  .state("about", {
+  	url: "/about",
+  	templateUrl: "about.html",
+  	data: {
+  	  pageTitle: "关于我们"
+  	},
+  	controller: "AboutCtrl"
+  })
+}]);
+
+myApp.controller('LoginCtrl', ["$scope", function ($scope) {
+  $scope.title = "login";
+}]);
+
+myApp.controller('RegisterCtrl', ["$scope", function ($scope) {
+  $scope.title = "register";
+}]);
+
+myApp.controller('AboutCtrl', ["$scope", function ($scope) {
+  //创建和初始化地图函数：
+  function initMap(){
+    createMap();//创建地图
+    setMapEvent();//设置地图事件
+    addMapControl();//向地图添加控件
+  }
+
+  //创建地图函数：
+  function createMap(){
+    var map = new BMap.Map("dituContent");//在百度地图容器中创建一个地图
+    var point = new BMap.Point(116.403011,39.912445);//定义一个中心点坐标
+    map.centerAndZoom(point,13);//设定地图的中心点和坐标并将地图显示在地图容器中
+    window.map = map;//将map变量存储在全局
+  }
+
+  //地图事件设置函数：
+  function setMapEvent(){
+    map.enableDragging();//启用地图拖拽事件，默认启用(可不写)
+    map.enableScrollWheelZoom();//启用地图滚轮放大缩小
+    map.enableDoubleClickZoom();//启用鼠标双击放大，默认启用(可不写)
+    map.enableKeyboard();//启用键盘上下左右键移动地图
+  }
+
+  //地图控件添加函数：
+  function addMapControl(){
+    //向地图中添加缩放控件
+    var ctrl_nav = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_LARGE});
+    map.addControl(ctrl_nav);
+    //向地图中添加缩略图控件
+    var ctrl_ove = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:1});
+    map.addControl(ctrl_ove);
+    //向地图中添加比例尺控件
+    var ctrl_sca = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+    map.addControl(ctrl_sca);
+  }
+
+  initMap();//创建和初始化地图
+}]);
+
+myApp.controller('HeadCtrl', ["$scope", function ($scope) {
+  $scope.city = '成都';
+  $scope.cities = [
+    '成都',
+    '上海',
+    '北京',
+    '杭州',
+    '深圳'
+  ];
+
+  $scope.chose = function(city) {
+    $scope.city = city;
+  };
+}]);
+</script>
+</body>
+</html>
